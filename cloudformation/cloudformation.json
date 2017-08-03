@@ -1,0 +1,23 @@
+{
+    "Resources": {
+        "RDS": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {
+                "AllocatedStorage": "5",
+                "DBInstanceClass": "db.t2.micro",
+				"DBInstanceIdentifier":"rds_test",
+                "Engine": "postgres",
+                "MasterUsername": "postgres",
+                "MasterUserPassword": "Mfgf48xzeZdx5LJr",
+                "DBName": "stats"     
+            }
+        },
+		"S3Bucket" : {
+		      "Type" : "AWS::S3::Bucket",
+			  "Properties": {
+              	  "BucketName" : "etl-8fit"
+              }
+			  
+		 }
+    }
+}
