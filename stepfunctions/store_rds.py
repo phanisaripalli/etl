@@ -6,10 +6,10 @@ import datetime
 
 
 #rds settings
-rds_host  = "test.cz9dahirrccs.eu-central-1.rds.amazonaws.com"
+rds_host  = "##############################"
 rds_username = 'postgres'
-rds_password = 'Mfgf48xzeZdx5LJr'
-rds_db_name = 'stats'
+rds_password = '<FROM CLOUDINFO>'
+rds_db_name = '<DBNAME>'
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
