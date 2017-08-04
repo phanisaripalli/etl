@@ -6,22 +6,21 @@ import datetime
 
 
 #rds settings
-rds_host  = "##############################"
+rds_host  = 'test.cz9dahirrccs.eu-central-1.rds.amazonaws.com'
 rds_username = 'postgres'
-rds_password = '<FROM CLOUDINFO>'
-rds_db_name = '<DBNAME>'
+rds_password = 'Mfgf48xzeZdx5LJr'
+rds_db_name = 'stats'
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-try:
-    connection = pg8000.connect(host=rds_host, port=5432, user=rds_username, password=rds_password, database=rds_db_name, connect_timeout=5)
-    connection = pg8000.connect(host=rds_host, port=5432, user=rds_username, password=rds_password, database=rds_db_name, connect_timeout=5)
-except:
-    logger.error("ERROR: Unexpected error: Could not connect to Postgres RDS instance.")
-    sys.exit()
-
 def handle(event, context):
+    try:
+        connection = pg8000.connect(host=rds_host, port=5432, user=rds_username, password=rds_password, database=rds_db_name, connect_timeout=5) 
+    except:
+        logger.error("ERROR: Unexpected error: Could not connect to Postgres RDS instance.")
+        sys.exit()
+        
     source = event['data']['object']['source']
     cur = connection.cursor()
     # ---------------- DELETE EVENT AND INSERT ------------------------
@@ -32,12 +31,12 @@ def handle(event, context):
     data = (event['id'], event['livemode'], event['type'], created)
     try:
         cur.execute("DELETE FROM stripe.event WHERE id = '" + event['id'] + "'")
-        #
         cur.execute("INSERT INTO stripe.event (id, livemode, type, created) VALUES (%s, %s, %s, %s)", data)
     except pg8000.Error as e:
         response = {
             "status": "Fail",
-            "message": "Database error while handling charges"
+            "message": "Database error while handling events",
+            "error" : e
         }        
         return response  
     
@@ -154,5 +153,6 @@ def handle(event, context):
         return response
         
     connection.commit()
+    connection.close()
     logger.error("SUCCESS: copied to Postgres RDS instance.")
     return source
